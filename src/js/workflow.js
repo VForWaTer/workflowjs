@@ -1,48 +1,109 @@
-let canvas = new draw2d.Canvas("dropdiv");
+class Box {
 
+    constructor(name, orgId, type, inputs, outputs) {
+        this._boxname = name;
+        this._orgid = orgId;
+        this._boxtype = type;
+        this._inputs = inputs;
+        this._outputs = outputs;
+        this._connectable_types = ["timeseries"]
+    }
 
-let start = new draw2d.shape.node.Start({x: 80, y: 150});
+    get box() {
+        return this._createBox();
+    }
 
-start.add(new draw2d.shape.basic.Label({text: "Test Label"}), new draw2d.layout.locator.Locator());
-let Button = "Button"
+    _createBox() {
+        // create a blank box with name and class TODO: and ID
+        let box = this._blankBox()
 
-let dataRect = new draw2d.shape.basic.Rectangle({
-    width: 120,
-    height: 30,
-    radius: 5,
-    bgColor: "#D9EFFD",
-    stroke: 0
-})
-dataRect.add(
-    new draw2d.shape.basic.Label({
-        text: Button,
-        stroke: 0,
-        fontSize: 15,
-        x: 5,
-        y: 2
-    }),
-    new draw2d.layout.locator.Locator());
-// dataRect.attr({"cssClass": "red_border_figure"})
-let port;
-port = dataRect.createPort(
-    "output",
-    new draw2d.layout.locator.XYRelPortLocator(100, 50),
-    // {
-    // radius:20,
-    // "cssClass": "red_border_figure"
-    // }
-);
-port.setCssClass("red_border_figure")
-// port.setBackgroundColor("#f0f000");
-// port = draw2d.figure.Port(
-//     "output",
-//     new draw2d.layout.locator.XYRelPortLocator(100, 50),
-//     {fill: "#f0f000",
-//     radius:20,
-//     "cssClass": "red_border_figure"
-//     })
-console.log('dataRect: ', dataRect.outputPorts)
-// dataRect.Port.setClass("red_border_figure")
-// canvas.add(figure2, 120, 150);
-// canvas.add(rect2);
-canvas.add(dataRect);
+        // add ports to the box
+        let port;
+        if (this._boxtype == "dataset") {
+            if (this._outputs.length == 1) {
+                this._createOutPort(box, "timeseries", 100, 50)
+            } else {
+                console.error('Cannot add ports to box. A dataset is supposed to have only one output.')
+            }
+        } else {
+            let relOutPort_y;
+            let outPortDist = (this._outputs.length/((3+this._outputs.length)*this._outputs.length))*100
+            let relInPort_y;
+            let inPortDist = (this._inputs.length/((3+this._inputs.length)*this._inputs.length))*100
+            for (let i in this._outputs) {
+                if (this._connectable_types.includes(this._outputs[i])) {
+                    relOutPort_y = 100
+                } else {
+                    relOutPort_y = 85
+                }
+                this._createOutPort(box, this._outputs[i], 100-(parseInt(i)+1)*outPortDist, relOutPort_y)
+            }
+            for (let i in this._inputs) {
+                if (this._connectable_types.includes(this._inputs[i])) {
+                    relInPort_y = 0
+                } else {
+                    relInPort_y = 15
+                }
+                this._createInPort(box, this._inputs[i], (parseInt(i)+1)*inPortDist, relInPort_y)
+            }
+        }
+        return box
+    }
+
+    _blankBox() {
+        let bHeight = 30;
+        let bTexty = 3;
+        if (this._boxtype == 'tool') {
+            bHeight = 50;
+            bTexty = 12;
+        }
+        let box = new draw2d.shape.basic.Rectangle({
+            id: "box" + this._orgid,
+            width: 140,
+            height: bHeight,
+            // resizable: true,
+            radius: 5,
+            bgColor: "#D9EFFD",
+            stroke: 0,
+            cssClass: "box-" + this._boxtype
+        })
+        box.add(
+            new draw2d.shape.basic.Label({
+                text: this._boxname,
+                stroke: 0,
+                fontSize: 15,
+                x: 5,  // Position of text in box
+                y: bTexty
+            }),
+            new draw2d.layout.locator.Locator());
+
+        // Don't show handles around rectangle when moving it
+        box.installEditPolicy(new draw2d.policy.figure.GlowSelectionFeedbackPolicy())
+        return box
+    }
+
+    _createOutPort(blankbox, porttype, relPortx, relPorty) {
+        // let port = new draw2d.OutputPort();
+        let port = blankbox.createPort(
+            "output",
+            new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),  // Position in % of box 0,0 is upper left
+        );
+        port.setCssClass(porttype)
+        return blankbox
+    }
+    _createInPort(blankbox, porttype, relPortx, relPorty) {
+        let port;
+        port = blankbox.createPort(
+            "input",
+            new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),  // Position in % of box 0,0 is upper left
+        );
+        /*// hide port when connected
+        let show=function(){this.setVisible(true);};
+        let hide=function(){this.setVisible(false);};
+        port.on("connect",hide, port);
+        port.on("disconnect",show, port);*/
+
+        port.setCssClass(porttype)
+        return blankbox
+    }
+}
