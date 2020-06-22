@@ -1,4 +1,4 @@
-let canvas = new draw2d.Canvas("dropdiv");
+let canvas = new draw2d.Canvas('dropdiv');
 
 // Define a spline to connect ports
 let createConnection = function () {
@@ -39,34 +39,36 @@ let createConnection = function () {
     return con;
 };*/
 
+// Two possibilities to connect ports: With drag&drop or click on start and end position
 // bind connection to the canvas (drag & drop)
 canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
     createConnection: createConnection
 }));
-
 /*// bind connection to the canvas (click on start and end port)
 canvas.installEditPolicy( new draw2d.policy.connection.ClickConnectionCreatePolicy({
     createConnection: createConnection
 }));*/
-
-
-let x = 200
-let y = 200
-let orgid = '324'
-// let type = 'dataset'
-let type = 'tool'
-let name = type
-let inputs = ['timeseries', 'string', 'string', 'boolean', 'boolean']
-let outputs = ['timeseries', 'string']
-
-bla = new Box(name, orgid, type, inputs, outputs)
-bla2 = new Box('dataset', 'd259', 'dataset', '', ['timeseries'])
-
 // let createConnection=function(){
 //     let con = new draw2d.Connection();
 //     con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
 //     return con;
 // };
 
-canvas.add(bla.box, x, y);
-canvas.add(bla2.box, 100, 100);
+
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drop(event) {
+    let x = event.layerX
+    let y = event.layerY
+    let id = event.dataTransfer.getData("text")
+    let box_param = JSON.parse(sessionStorage.getItem(id))
+    let box = new Box(box_param.name, box_param.orgid, box_param.type, box_param.inputs, box_param.outputs)
+    canvas.add(box.box, x, y);
+}
+

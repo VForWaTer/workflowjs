@@ -3,19 +3,6 @@
 /*    fill: rgba(255, 0, 0, 0);*/
 /*    stroke: rgba(255, 0, 0, 0);*/
 /*}*/
-
-#dropdiv {
-    position: absolute;
-    right: 50px;
-    left: 50px;
-    top: 50px;
-    bottom: 50px;
-    padding: 10px;
-    border: 1px solid #00021d;
-    background: lightgrey;
-}
-
-
 .timeseries {
     fill: red;
     stroke: indianred;
@@ -23,11 +10,11 @@
 }
 .string {
     fill: yellow;
-    stroke: yellowgreen;
+    stroke: lightgoldenrodyellow;
     height: 150px;
 }
 .boolean {
-    fill: blue;
-    stroke: cornflowerblue;
+    fill: green;
+    stroke: limegreen;
     height: 150px;
 }

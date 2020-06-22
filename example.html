@@ -3,10 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
-  <link rel="stylesheet" href="src/css/workflow.css" type='text/css'></link>
+  <link href="src/css/workflow.css" rel="stylesheet" type='text/css'>
+  <link href="src/css/example.css" rel="stylesheet" type='text/css'/>
 </head>
 <body>
-<div id="dropdiv" title="Drag & Drop your Data and Tools here">Dropzone
+<div id="tools"><h3>Tools & Data</h3>
+  <div>
+    <div class="data timeseries" draggable="true" id="id123" ondragstart="drag(event)"
+         style="cursor:move;">
+      dataset<br></div>
+    <div class="tool" draggable="true" id="id234" ondragstart="drag(event)"
+         style="cursor:move;">
+      tool<br></div>
+  </div>
+</div>
+<div id="dropdiv" ondragover="allowDrop(event)" ondrop="drop(event)" title="Drag & Drop your Data and Tools here">
+  Dropzone
 </div>
 </body>
 </html>
@@ -16,3 +28,20 @@
 <script src="src/js/workflow.js" type='text/javascript'></script>
 <script src="src/js/example.js" type='text/javascript'></script>
 
+<!--define an example dataset and tool in the sessionStorage: -->
+<script>
+  sessionStorage.setItem('id123', JSON.stringify({
+    orgid: '324',
+    type: 'data',
+    name: 'dataset',
+    inputs: [],
+    outputs: ['timeseries']
+  }))
+  sessionStorage.setItem('id234', JSON.stringify({
+    orgid: '324',
+    type: 'tool',
+    name: 'tool',
+    inputs: ['timeseries', 'string', 'string', 'boolean', 'boolean'],
+    outputs: ['timeseries', 'string']
+  }))
+</script>

@@ -6,7 +6,7 @@ class Box {
         this._boxtype = type;
         this._inputs = inputs;
         this._outputs = outputs;
-        this._connectable_types = ["timeseries"]
+        this._connectable_types = ['timeseries']
     }
 
     get box() {
@@ -18,23 +18,22 @@ class Box {
         let box = this._blankBox()
 
         // add ports to the box
-        let port;
-        if (this._boxtype == "dataset") {
-            if (this._outputs.length == 1) {
-                this._createOutPort(box, "timeseries", 100, 50)
+        if (this._boxtype === 'dataset') {
+            if (this._outputs.length === 1) {
+                this._createOutPort(box, 'timeseries', 100, 50)
             } else {
                 console.error('Cannot add ports to box. A dataset is supposed to have only one output.')
             }
         } else {
             let relOutPort_y;
-            let outPortDist = (this._outputs.length/((3+this._outputs.length)*this._outputs.length))*100
+            let outPortDist = (this._outputs.length / ((3 + this._outputs.length) * this._outputs.length)) * 100
             let relInPort_y;
-            let inPortDist = (this._inputs.length/((3+this._inputs.length)*this._inputs.length))*100
+            let inPortDist = (this._inputs.length / ((3 + this._inputs.length) * this._inputs.length)) * 100
             for (let i in this._outputs) {
                 if (this._connectable_types.includes(this._outputs[i])) {
                     relOutPort_y = 100
                 } else {
-                    relOutPort_y = 85
+                    relOutPort_y = 95
                 }
                 this._createOutPort(box, this._outputs[i], 100-(parseInt(i)+1)*outPortDist, relOutPort_y)
             }
@@ -42,7 +41,7 @@ class Box {
                 if (this._connectable_types.includes(this._inputs[i])) {
                     relInPort_y = 0
                 } else {
-                    relInPort_y = 15
+                    relInPort_y = 5
                 }
                 this._createInPort(box, this._inputs[i], (parseInt(i)+1)*inPortDist, relInPort_y)
             }
@@ -53,20 +52,22 @@ class Box {
     _blankBox() {
         let bHeight = 30;
         let bTexty = 3;
-        if (this._boxtype == 'tool') {
+        if (this._boxtype === 'tool') {
             bHeight = 50;
             bTexty = 12;
         }
+        let boxid = 'box' + this._orgid;
         let box = new draw2d.shape.basic.Rectangle({
-            id: "box" + this._orgid,
+            id: boxid,
             width: 140,
             height: bHeight,
             // resizable: true,
             radius: 5,
-            bgColor: "#D9EFFD",
+            bgColor: '#D9EFFD',
             stroke: 0,
-            cssClass: "box-" + this._boxtype
+            cssClass: 'box-' + this._boxtype
         })
+        box.attr({id: boxid})
         box.add(
             new draw2d.shape.basic.Label({
                 text: this._boxname,
@@ -85,7 +86,7 @@ class Box {
     _createOutPort(blankbox, porttype, relPortx, relPorty) {
         // let port = new draw2d.OutputPort();
         let port = blankbox.createPort(
-            "output",
+            'output',
             new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),  // Position in % of box 0,0 is upper left
         );
         port.setCssClass(porttype)
@@ -94,14 +95,14 @@ class Box {
     _createInPort(blankbox, porttype, relPortx, relPorty) {
         let port;
         port = blankbox.createPort(
-            "input",
+            'input',
             new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),  // Position in % of box 0,0 is upper left
         );
         /*// hide port when connected
         let show=function(){this.setVisible(true);};
         let hide=function(){this.setVisible(false);};
-        port.on("connect",hide, port);
-        port.on("disconnect",show, port);*/
+        port.on('connect',hide, port);
+        port.on('disconnect',show, port);*/
 
         port.setCssClass(porttype)
         return blankbox

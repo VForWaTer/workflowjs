@@ -1,0 +1,26 @@
+#tools {
+    position: absolute;
+    width: 110px;
+    left: 5px;
+    top: 50px;
+    bottom: 50px;
+    padding: 10px;
+    border: 1px solid #00021d;
+}
+
+#dropdiv {
+    position: absolute;
+    right: 50px;
+    left: 140px;
+    top: 50px;
+    bottom: 50px;
+    padding: 10px;
+    border: 1px solid #00021d;
+    background: lightgrey;
+}
+
+.data, .tool {
+    height: 20px;
+    border: 2px outset;
+    padding: 10px;
+}
