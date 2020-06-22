@@ -9,15 +9,16 @@
 <body>
 <div id="tools"><h3>Tools & Data</h3>
   <div>
-    <div class="data timeseries" draggable="true" id="id123" ondragstart="drag(event)"
+    <div class="data timeseries" draggable="true" id="id123" ondragstart="dragstart_handler(event);"
          style="cursor:move;">
       dataset<br></div>
-    <div class="tool" draggable="true" id="id234" ondragstart="drag(event)"
+    <div class="tool" draggable="true" id="id234" ondragstart="dragstart_handler(event);"
          style="cursor:move;">
       tool<br></div>
   </div>
 </div>
-<div id="dropdiv" ondragover="allowDrop(event)" ondrop="drop(event)" title="Drag & Drop your Data and Tools here">
+<div id="dropdiv" ondragover="dragover_handler(event)" ondrop="drop_handler(event)"
+     title="Drag & Drop your Data and Tools here">
   Dropzone
 </div>
 </body>
