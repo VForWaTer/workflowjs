@@ -10,3 +10,6 @@ Simply use the files from `src/css` and `src/js` in your project.
 
 ### Example
 Just open `example.html` in your browser. Tested on Chromium version &#8805;81  and Firefox version &#8805;77.
+
+![Screenshot of Example](https://repository-images.githubusercontent.com/272442666/a5a2da80-b49d-11ea-9f66-ff83b10e7da5)
+
