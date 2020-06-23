@@ -18,33 +18,25 @@ class Box {
         let box = this._blankBox()
 
         // add ports to the box
-        if (this._boxtype === 'dataset') {
-            if (this._outputs.length === 1) {
-                this._createOutPort(box, 'timeseries', 100, 50)
+        let relOutPort_y;
+        let outPortDist = (this._outputs.length / ((3 + this._outputs.length) * this._outputs.length)) * 100
+        let relInPort_y;
+        let inPortDist = (this._inputs.length / ((3 + this._inputs.length) * this._inputs.length)) * 100
+        for (let i in this._outputs) {
+            if (this._connectable_types.includes(this._outputs[i])) {
+                relOutPort_y = 100
             } else {
-                console.error('Cannot add ports to box. A dataset is supposed to have only one output.')
+                relOutPort_y = 95
             }
-        } else {
-            let relOutPort_y;
-            let outPortDist = (this._outputs.length / ((3 + this._outputs.length) * this._outputs.length)) * 100
-            let relInPort_y;
-            let inPortDist = (this._inputs.length / ((3 + this._inputs.length) * this._inputs.length)) * 100
-            for (let i in this._outputs) {
-                if (this._connectable_types.includes(this._outputs[i])) {
-                    relOutPort_y = 100
-                } else {
-                    relOutPort_y = 95
-                }
-                this._createOutPort(box, this._outputs[i], 100-(parseInt(i)+1)*outPortDist, relOutPort_y)
+            this._createOutPort(box, this._outputs[i], 100 - (parseInt(i) + 1) * outPortDist, relOutPort_y)
+        }
+        for (let i in this._inputs) {
+            if (this._connectable_types.includes(this._inputs[i])) {
+                relInPort_y = 0
+            } else {
+                relInPort_y = 5
             }
-            for (let i in this._inputs) {
-                if (this._connectable_types.includes(this._inputs[i])) {
-                    relInPort_y = 0
-                } else {
-                    relInPort_y = 5
-                }
-                this._createInPort(box, this._inputs[i], (parseInt(i)+1)*inPortDist, relInPort_y)
-            }
+            this._createInPort(box, this._inputs[i], (parseInt(i) + 1) * inPortDist, relInPort_y)
         }
         return box
     }
