@@ -3,7 +3,10 @@ let canvas = new draw2d.Canvas('dropdiv');
 // Define a spline to connect ports
 let createConnection = function () {
     let con = new draw2d.Connection();
-    return con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
+    con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
+    // Add Arrow to spline end
+    con.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+    return con
 }
 
 /*// Define a rubberband to connect ports
@@ -39,8 +42,11 @@ let createConnection = function () {
     return con;
 };*/
 
-// Two possibilities to connect ports: With drag&drop or click on start and end position
-// bind connection to the canvas (drag & drop)
+// Two possibilities to connect ports: With drag&drop (with resize of suitable target connections) or
+// click on start and end position (with waves around start port)
+
+// Policies to style any edit interactions in the canvas
+// used to bind connection to the canvas (drag & drop)
 canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
     createConnection: createConnection
 }));
@@ -48,13 +54,8 @@ canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy
 canvas.installEditPolicy( new draw2d.policy.connection.ClickConnectionCreatePolicy({
     createConnection: createConnection
 }));*/
-// let createConnection=function(){
-//     let con = new draw2d.Connection();
-//     con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
-//     return con;
-// };
 
-
+// define drag and drop interaction from outside to canvas to the draw2d canvas
 function dragstart_handler(ev) {
     ev.dataTransfer.setData("text/plain", ev.target.id);
 }
