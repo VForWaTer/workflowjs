@@ -1,68 +1,18 @@
 let canvas = new draw2d.Canvas('dropdiv');
 
-// Define a spline to connect ports
-let createConnection = function () {
-    let con = new draw2d.Connection();
-    con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
-    // Add Arrow to spline end
-    con.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
-    return con
-}
-
-/*// Define a rubberband to connect ports
-let RubberConnection = draw2d.Connection.extend({
-    NAME: "RubberConnection",
-
-    init: function (attr, setter, getter) {
-        this._super($.extend({
-                color: "#33691e",
-                stroke: 1,
-                outlineStroke: 0,
-                outlineColor: null
-            }, attr),
-            setter,
-            getter);
-        this.setRouter(new draw2d.layout.connection.RubberbandRouter());
-    },
-
-    repaint: function (attributes) {
-        if (this.repaintBlocked === true || this.shape === null) {
-            return;
-        }
-        attributes = attributes || {};
-        // enrich the rendering with a "fill" attribute
-        if (typeof attributes.fill === "undefined") {
-            attributes.fill = "#aed581";
-        }
-        this._super(attributes);
-    }
-});
-let createConnection = function () {
-    let con = new RubberConnection();
-    return con;
-};*/
-
-// Two possibilities to connect ports: With drag&drop (with resize of suitable target connections) or
-// click on start and end position (with waves around start port)
-
 // Policies to style any edit interactions in the canvas
-// used to bind connection to the canvas (drag & drop)
+// Two possibilities to connect ports: 1. With drag&drop (with resize of suitable target connections) or
+// 2. click on start and end position (with waves around start port)
+// 1. Bind connection to the canvas (drag & drop):
+let connection = new Connector()
 canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
-    createConnection: createConnection
+    createConnection: connection.connector
 }));
-/*// bind connection to the canvas (click on start and end port)
+
+/*// 2. Bind connection to the canvas (click on start and end port):
 canvas.installEditPolicy( new draw2d.policy.connection.ClickConnectionCreatePolicy({
     createConnection: createConnection
 }));*/
-
-// define drag and drop interaction from outside to canvas to the draw2d canvas
-function dragstart_handler(ev) {
-    ev.dataTransfer.setData("text/plain", ev.target.id);
-}
-
-function dragover_handler(ev) {
-    ev.preventDefault();
-}
 
 function drop_handler(ev) {
     ev.preventDefault();  // needed for Firefox

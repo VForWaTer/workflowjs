@@ -84,6 +84,7 @@ class Box {
         port.setCssClass(porttype)
         return blankbox
     }
+
     _createInPort(blankbox, porttype, relPortx, relPorty) {
         let port;
         port = blankbox.createPort(
@@ -99,4 +100,72 @@ class Box {
         port.setCssClass(porttype)
         return blankbox
     }
+}
+
+
+class Connector {
+
+    constructor() {
+    }
+
+    get connector() {
+        return this._createConnector();
+    }
+
+    _createConnector() {
+        let createFunction = function () {
+            let con = new draw2d.Connection();
+            con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
+            // Add Arrow to spline end
+            let arrow = new draw2d.decoration.connection.ArrowDecorator(17, 12);
+            arrow.setBackgroundColor(new draw2d.util.Color("#326dc4"))
+            con.setTargetDecorator(arrow);
+
+            return con
+
+            /*// Define a rubberband to connect ports
+            let RubberConnection = draw2d.Connection.extend({
+                NAME: "RubberConnection",
+
+                init: function (attr, setter, getter) {
+                    this._super($.extend({
+                            color: "#33691e",
+                            stroke: 1,
+                            outlineStroke: 0,
+                            outlineColor: null
+                        }, attr),
+                        setter,
+                        getter);
+                    this.setRouter(new draw2d.layout.connection.RubberbandRouter());
+                },
+
+                repaint: function (attributes) {
+                    if (this.repaintBlocked === true || this.shape === null) {
+                        return;
+                    }
+                    attributes = attributes || {};
+                    // enrich the rendering with a "fill" attribute
+                    if (typeof attributes.fill === "undefined") {
+                        attributes.fill = "#aed581";
+                    }
+                    this._super(attributes);
+                }
+            });
+            return new RubberConnection();*/
+        }
+        return createFunction
+
+
+    }
+
+}
+
+
+// define drag and drop interaction from outside to canvas to the draw2d canvas
+function dragstart_handler(ev) {
+    ev.dataTransfer.setData("text/plain", ev.target.id);
+}
+
+function dragover_handler(ev) {
+    ev.preventDefault();
 }
