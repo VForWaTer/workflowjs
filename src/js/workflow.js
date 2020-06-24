@@ -108,20 +108,20 @@ class Connector {
     constructor() {
     }
 
-    get connector() {
-        return this._createConnector();
+    get connectionPolicy() {
+        return this._createConnection();
     }
 
-    _createConnector() {
-        let createFunction = function () {
-            let con = new draw2d.Connection();
-            con.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
+    _createConnection() {
+        let connector_function = function () {
+            // Define a spline to connect ports
+            let SplineCon = new draw2d.Connection();
+            SplineCon.setRouter(new draw2d.layout.connection.SplineConnectionRouter());
             // Add Arrow to spline end
             let arrow = new draw2d.decoration.connection.ArrowDecorator(17, 12);
             arrow.setBackgroundColor(new draw2d.util.Color("#326dc4"))
-            con.setTargetDecorator(arrow);
-
-            return con
+            SplineCon.setTargetDecorator(arrow);
+            return SplineCon
 
             /*// Define a rubberband to connect ports
             let RubberConnection = draw2d.Connection.extend({
@@ -153,11 +153,23 @@ class Connector {
             });
             return new RubberConnection();*/
         }
-        return createFunction
 
+        // Policies to style any edit interactions in the canvas
+        // Two possibilities to connect ports:
+        // 1. With drag&drop (with resize of suitable target connections) or
+        // 2. click on start and end position (with waves around start port)
 
+        // 1. Bind connection to the canvas (drag & drop):
+        let connection = new draw2d.policy.connection.DragConnectionCreatePolicy({
+            createConnection: connector_function
+        })
+        /*// 2. Bind connection to the canvas (click on start and end port):
+        let connection = new draw2d.policy.connection.ClickConnectionCreatePolicy({
+            createConnection: connector_function
+        })*/
+
+        return connection
     }
-
 }
 
 

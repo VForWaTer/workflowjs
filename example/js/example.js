@@ -1,18 +1,8 @@
 let canvas = new draw2d.Canvas('dropdiv');
 
-// Policies to style any edit interactions in the canvas
-// Two possibilities to connect ports: 1. With drag&drop (with resize of suitable target connections) or
-// 2. click on start and end position (with waves around start port)
-// 1. Bind connection to the canvas (drag & drop):
+// Define policies to style any edit interactions in the canvas
 let connection = new Connector()
-canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
-    createConnection: connection.connector
-}));
-
-/*// 2. Bind connection to the canvas (click on start and end port):
-canvas.installEditPolicy( new draw2d.policy.connection.ClickConnectionCreatePolicy({
-    createConnection: createConnection
-}));*/
+canvas.installEditPolicy(connection.connectionPolicy);
 
 function drop_handler(ev) {
     ev.preventDefault();  // needed for Firefox
