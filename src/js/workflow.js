@@ -1,5 +1,12 @@
 class Box {
 
+    /**
+     * @param {String} name Name of the box
+     * @param {String} orgId ID of the dataset used on the website out of workflowjs
+     * @param {String} type Used to define style of box. Implemented is 'tool', which increases the height of the box
+     * @param {List} inputs List of strings to define port types. Implemented are timeseries, string, boolean
+     * @param {List} outputs List of strings to define port types. Implemented are timeseries, string, boolean
+     */
     constructor(name, orgId, type, inputs, outputs) {
         this._boxname = name;
         this._orgid = orgId;
@@ -9,10 +16,18 @@ class Box {
         this._connectable_types = ['timeseries']
     }
 
+    /**
+     * @public
+     * @return {draw2d.shape} A box with ports to be placed on a draw2d.canvas.
+     */
     get box() {
         return this._createBox();
     }
 
+    /**
+     * @private
+     * @return {draw2d.shape} A box with ports to be placed on a draw2d.canvas.
+     */
     _createBox() {
         // create a blank box with name and class TODO: and ID
         let box = this._blankBox()
@@ -41,18 +56,22 @@ class Box {
         return box
     }
 
+    /**
+     * @private
+     * @return {draw2d.shape} A blank box without any ports to be extended or placed on a draw2d.canvas.
+     */
     _blankBox() {
-        let bHeight = 30;
-        let bTexty = 3;
+        let boxHeight = 30;
+        let boxTexty = 3;
         if (this._boxtype === 'tool') {
-            bHeight = 50;
-            bTexty = 12;
+            boxHeight = 50;
+            boxTexty = 12;
         }
         let boxid = 'box' + this._orgid;
         let box = new draw2d.shape.basic.Rectangle({
             id: boxid,
             width: 140,
-            height: bHeight,
+            height: boxHeight,
             // resizable: true,
             radius: 5,
             bgColor: '#D9EFFD',
@@ -66,7 +85,7 @@ class Box {
                 stroke: 0,
                 fontSize: 15,
                 x: 5,  // Position of text in box
-                y: bTexty
+                y: boxTexty
             }),
             new draw2d.layout.locator.Locator());
 
@@ -75,6 +94,14 @@ class Box {
         return box
     }
 
+    /**
+     * @private
+     * @param {draw2d.shape} blankbox Object to add the port to.
+     * @param {String} porttype Definies CSS class to style port.
+     * @param {Number} relPortx Relative position of x in percent; 0,0 is upper left.
+     * @param {Number} relPorty Relative position of y in percent; 0,0 is upper left.
+     * @return {draw2d.shape} The input Objected with an port added.
+     */
     _createOutPort(blankbox, porttype, relPortx, relPorty) {
         // let port = new draw2d.OutputPort();
         let port = blankbox.createPort(
@@ -85,11 +112,19 @@ class Box {
         return blankbox
     }
 
+    /**
+     * @private
+     * @param {draw2d.shape} blankbox Object to add the port to
+     * @param {String} porttype definies CSS class to style port
+     * @param {Number} relPortx relative position of x in percent; 0,0 is upper left
+     * @param {Number} relPorty relative position of y in percent; 0,0 is upper left
+     * @return {draw2d.shape} The input Objected with an port added.
+     */
     _createInPort(blankbox, porttype, relPortx, relPorty) {
         let port;
         port = blankbox.createPort(
             'input',
-            new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),  // Position in % of box 0,0 is upper left
+            new draw2d.layout.locator.XYRelPortLocator(relPortx, relPorty),
         );
         /*// hide port when connected
         let show=function(){this.setVisible(true);};
@@ -98,20 +133,36 @@ class Box {
         port.on('disconnect',show, port);*/
 
         port.setCssClass(porttype)
+        port.on('click', function () {
+            console.log('clicked')
+            console.log('parent: ', port.getParent())
+            console.log('policy: ', port.installEditPolicy(new draw2d.policy.ResizeSelectionFeedbackPolicy()))
+        })
+        // console.log('onDragEnter: ', port.onDragEnter(function () {console.log('Enter')}))
+        // port.attr({selectable: false})
+        // port.setDraggable(false)
         return blankbox
     }
 }
 
 
-class Connector {
+class Connection {
 
     constructor() {
     }
 
+    /**
+     * @public
+     * @return {draw2d.Connection} Defines the style of the connection used on a draw2d.canvas.
+     */
     get connectionPolicy() {
         return this._createConnection();
     }
 
+    /**
+     * @private
+     * @return {draw2d.Connection} The actual connection used on a draw2d.canvas.
+     */
     _createConnection() {
         let connector_function = function () {
             // Define a spline to connect ports
@@ -174,10 +225,20 @@ class Connector {
 
 
 // define drag and drop interaction from outside to canvas to the draw2d canvas
+/**
+ * @private
+ * @listens event:DragEvent
+ * @param {Object} ev Start of the drag event outside of the canvas.
+ */
 function dragstart_handler(ev) {
     ev.dataTransfer.setData("text/plain", ev.target.id);
 }
 
+/**
+ * @private
+ * @listens event:DragEvent
+ * @param {Object} ev The drag event on the Canvas.
+ */
 function dragover_handler(ev) {
     ev.preventDefault();
 }

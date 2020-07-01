@@ -1,7 +1,7 @@
 let canvas = new draw2d.Canvas('dropdiv');
 
 // Define policies to style any edit interactions in the canvas
-let connection = new Connector()
+let connection = new Connection()
 canvas.installEditPolicy(connection.connectionPolicy);
 
 function drop_handler(ev) {
